@@ -1,0 +1,49 @@
+# Default configuration for adaptive-region-sensing-sr
+# Edit the data paths to point at your local COCO image folders.
+
+data:
+  train_dir: "data/COCO/Train"   # folder of *.png HR images for training
+  test_dir: "data/COCO/Test"     # folder of *.png HR images for evaluation
+  lr_size: 256                   # bicubic-downsampled input size (e.g. 256 or 128)
+  max_cache_size: 1000
+
+train:
+  model: "transconv"     # one of: transconv | uducnn | uudcnn
+  batch_size: 4
+  learning_rate: 0.001
+  num_epochs: 50
+  num_workers: 2
+  # StepLR scheduler
+  scheduler_step_size: 40
+  scheduler_gamma: 0.1
+  # where the trained checkpoint is written
+  checkpoint_path: "weights/model.pt"
+
+# Region-sensing module hyper-parameters
+region_sensing:
+  patch_size: 2
+  image_size: 256
+  temperature: 0.05
+
+# Pretrained weight paths used by test.py (relative to repo root).
+# These files are NOT included in the repo (weights/ is gitignored).
+weights:
+  transconv1: "weights/TransConv_weight1.pt"
+  transconv2: "weights/TransConv_weight2.pt"
+  uducnn: "weights/UDUCNN_weight1.pth"
+  uudcnn: "weights/UUDCNN_weight1.pt"
+  imcnn1: "weights/IMCNN_weight1_k2.pt"
+  imcnn2: "weights/IMCNN_weight2_k2.pt"
+  mrimcnn1: "weights/MRIMCNN_weight1_k4.pt"
+  mrimcnn2: "weights/MRIMCNN_weight2_k2.pt"
+
+# Region-sensing model instantiation for evaluation pipelines.
+eval_models:
+  imcnn1:   {patch_size: 2, image_size: 256, temperature: 0.05}
+  imcnn2:   {patch_size: 2, image_size: 512, temperature: 0.05}
+  mrimcnn1: {patch_size: 4, image_size: 256, temperature: 0.05}
+  mrimcnn2: {patch_size: 2, image_size: 512, temperature: 0.05}
+
+# Optional image used for the qualitative visualization at the end of test.py.
+# Leave empty to skip visualization.
+viz_image: ""
