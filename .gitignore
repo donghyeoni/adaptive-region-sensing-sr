@@ -3,17 +3,22 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
+# Virtual environment
+.venv/
+venv/
+
 # Model weights / checkpoints
 weights/
 *.pt
 *.pth
 
-# Datasets
-data/
-COCO/
+# Datasets (root-level only; do NOT ignore the src/data/ package)
+/data/
+/COCO/
 
-# Image outputs
+# Image outputs (but keep committed results/ artifacts)
 *.png
+!results/**
 
 # OS
 .DS_Store

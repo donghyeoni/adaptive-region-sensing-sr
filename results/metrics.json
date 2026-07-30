@@ -1,0 +1,8 @@
+{
+  "model": "transconv",
+  "epochs": 10,
+  "lr_size": 64,
+  "hr_size": 128,
+  "final_train_loss": 0.046471,
+  "num_parameters": 208707
+}

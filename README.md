@@ -38,8 +38,13 @@ produce the low-resolution input (256 or 128).
 
 The dataset is **not included** in this repository. Download COCO images from
 [cocodataset.org](http://cocodataset.org) and point the config at your local
-folders (`data.train_dir` / `data.test_dir`). The loader globs `*.png` files in
+folders (`data.train_dir` / `data.test_dir`). The loader globs image files in
 those directories.
+
+**No data needed to sanity-check the pipeline:** `run_all.py` synthesizes a tiny
+image set, trains `TransConv` for a few epochs on CPU at reduced resolution, and
+writes a sample super-resolution figure + metrics to `results/` (see
+[RESULTS.md](RESULTS.md)). This is a reproducible smoke test, not a benchmark.
 
 ## Structure
 
@@ -51,7 +56,8 @@ adaptive-region-sensing-sr/
 │   └── Memory-constrained UAV multi-resolution sensing with adaptive region selection.pptx
 ├── src/
 │   ├── data/
-│   │   └── dataset.py          # LoadDataset: COCO *.png HR -> bicubic LR pairs
+│   │   ├── __init__.py
+│   │   └── dataset.py          # LoadDataset: HR images -> bicubic LR/HR pairs
 │   ├── models/
 │   │   ├── reconstruction.py   # TransConv, UDUCNN, UUDCNN, ResidualBlock, ResidualBlock2
 │   │   └── regionsensing.py    # IMCNN, MRIMCNN
@@ -59,7 +65,10 @@ adaptive-region-sensing-sr/
 │   └── pipelines.py            # multi-stage reconstruct + mask compositions
 ├── train.py                    # training loop
 ├── test.py                     # PSNR evaluation + qualitative visualization
+├── run_all.py                  # reproducible synthetic smoke run -> results/
+├── results/                    # committed artifacts: train log, model summary, sample_sr.png
 ├── requirements.txt
+├── RESULTS.md
 └── .gitignore
 ```
 
@@ -78,10 +87,16 @@ your local COCO folders and adjust hyper-parameters as needed.
 `train.model` in the config):
 
 ```bash
-python train.py --config configs/default.yaml
+python train.py --config configs/default.yaml --seed 0
 ```
 
 The trained checkpoint is written to `train.checkpoint_path`.
+
+To run the reproducible synthetic smoke test end-to-end (no COCO required):
+
+```bash
+python run_all.py        # trains on synthetic images, writes results/
+```
 
 **Evaluate** PSNR across the reconstruction pipelines (and optionally render a
 qualitative comparison by setting `viz_image`):
@@ -98,6 +113,12 @@ config. Any pipeline whose weight files are missing is skipped.
 - **Weights are not included.** The `weights/` directory and all `*.pt` / `*.pth`
   files are gitignored. Provide your own trained checkpoints and update the
   `weights:` paths in the config.
+- **Missing dataset module restored.** `train.py` imported
+  `from src.data.dataset import LoadDataset`, but that module was absent from the
+  repository, so training failed at import. It is now implemented
+  (`src/data/dataset.py`): it loads HR images from a folder and builds
+  bicubic LR→HR pairs, where the HR/target side is `2 × lr_size` (the models
+  upsample 2×). `train.py` also gained a `--seed` flag for reproducibility.
 - The original `loaddataandtrain.py` was a Colab export and **did not run
   as-is**. The following bugs were fixed while modularizing:
   - `LoadDataset1` (undefined) → `LoadDataset`

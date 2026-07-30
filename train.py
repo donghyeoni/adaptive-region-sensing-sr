@@ -64,7 +64,13 @@ def train(model, device, train_loader, optimizer, criterion, num_epochs, schedul
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/default.yaml")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="seed torch/numpy RNG for reproducible training")
     args = parser.parse_args()
+
+    if args.seed is not None:
+        np.random.seed(args.seed)
+        torch.manual_seed(args.seed)
 
     with open(args.config, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)

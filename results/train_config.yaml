@@ -1,0 +1,14 @@
+data:
+  lr_size: 64
+  max_cache_size: 100
+  test_dir: C:\Users\SSAFY\Desktop\git_upload\adaptive-region-sensing-sr\results\synthetic_data\Test
+  train_dir: C:\Users\SSAFY\Desktop\git_upload\adaptive-region-sensing-sr\results\synthetic_data\Train
+train:
+  batch_size: 4
+  checkpoint_path: C:\Users\SSAFY\Desktop\git_upload\adaptive-region-sensing-sr\weights\model.pt
+  learning_rate: 0.001
+  model: transconv
+  num_epochs: 10
+  num_workers: 0
+  scheduler_gamma: 0.1
+  scheduler_step_size: 8
