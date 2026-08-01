@@ -34,3 +34,12 @@ target:
 *This is a pipeline sanity check on synthetic data, not a super-resolution
 benchmark. For real PSNR numbers, train on COCO and evaluate with `test.py` (see
 the presentation in `docs/`).*
+
+## Original notebook figure
+
+The qualitative comparison produced by the original `performance` notebook —
+the 512² original beside the cascaded `UUDCNN` → `IMCNN` reconstruction, run on
+a COCO test image — is preserved at
+[`results/notebook_reference/performance__cell07_1.png`](results/notebook_reference/performance__cell07_1.png).
+Unlike the synthetic sanity check above, this one comes from the real training
+data used in the project.
